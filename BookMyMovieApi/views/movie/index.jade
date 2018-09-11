@@ -1,0 +1,23 @@
+doctype
+html
+  head
+    title=title
+  body
+    h3 Movies
+    table
+      tr
+        th Name
+        th Description
+        th Edit
+        th Delete
+      each item in movies
+        tr
+          td #{item.name}
+          td #{item.description}
+          td
+            a(href='/movie/edit/#{item.id}') Edit
+          td
+            a(href='/movie/delete/#{item.id}') Delete
+    p
+    #menu
+      a(href='/movie/create') Add new movie
