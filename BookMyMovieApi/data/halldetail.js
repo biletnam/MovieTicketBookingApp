@@ -10,7 +10,7 @@ module.exports = {
       },
       {
         "_id": 2,
-        "city": "Ram",
+        "city": "Ram1",
         "hall_name": "AGS Cinema",
         "screen":"screen 1",
         "no_of_seats":50

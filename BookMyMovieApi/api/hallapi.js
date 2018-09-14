@@ -17,14 +17,21 @@ var HallApi = {
 		callback (null, _clone(hall));
 	},
 	getDistinctCity: function(callback) {
-		var city =_distinct(halls,city);
-		callback (null, _clone(hall));
+		var city = [];
+		var i=0;
+		for(i = 0; i< halls.length; i++){    
+			if(city.indexOf(halls[i].city) === -1){
+				city.push(halls[i].city);        
+			}        
+		}
+		callback (null, _clone(city));
   },
   updateHallById: function(id, hall, callback) {
 			var existingHallIndex = _.indexOf(halls, _.find(halls, {_id: parseInt(id)}));
 			hall._id = parseInt(id);
-			hall.splice(existingHallIndex, 1, hall);
+			halls.slice(existingHallIndex, 1, hall);
 			callback (null);
+		
   },
 	saveHall: function(hall, callback) {
 		currentID = currentID + 1;

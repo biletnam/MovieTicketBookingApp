@@ -3,8 +3,19 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function(req, res) {
-  MovieHallApi.getAllMovieHalls(function(err, items) {
-    res.render('moviehall/index', {title: 'Moviehalls', moviehalls: items})
+  MovieHallApi.getAllMovieHalls(function(err, moviehalls) {
+    if(err)
+       {
+         return res.json({'success':false,'message':'Some Error'})
+         
+       }
+       else
+       {
+         res.setHeader('Cache-Control','no-cache');
+         response.data=moviehalls;
+         res.send(response);
+       }
+    //res.render('moviehall/index', {title: 'Moviehalls', moviehalls: items})
 	});
 });
 
@@ -16,13 +27,35 @@ router.post('/create', function(req, res) {
   moviehall.end_date = req.body.end_date;
 
   MovieHallApi.saveMovieHall(moviehall, function(err, moviehall) {
-	  res.redirect('/moviehall');
+    if(err)
+       {
+         return res.json({'success':false,'message':'Some Error'})
+         
+       }
+       else
+       {
+         res.setHeader('Cache-Control','no-cache');
+         response.data=moviehall;
+         res.send(response);
+       }
+	 // res.redirect('/moviehall');
   });
 });
 
 router.get('/edit/:id', function(req, res) {
   MovieHallApi.getMovieHallById(req.params.id, function(err, moviehall) {
-    res.render('moviehall/edit', {moviehall: moviehall});
+    if(err)
+       {
+         return res.json({'success':false,'message':'Some Error'})
+         
+       }
+       else
+       {
+         res.setHeader('Cache-Control','no-cache');
+         response.data=moviehall;
+         res.send(response);
+       }
+    //res.render('moviehall/edit', {moviehall: moviehall});
   });
 
 });
@@ -34,13 +67,35 @@ router.post('/edit/:id', function(req, res) {
   updatedMoviehall.start_date = req.body.start_date;
   updatedMoviehall.end_date = req.body.end_date;
   MovieHallApi.updateMovieHallById(req.params.id, updatedMoviehall, function(err) {
-			res.redirect('/moviehall');
+    if(err)
+       {
+         return res.json({'success':false,'message':'Some Error'})
+         
+       }
+       else
+       {
+         res.setHeader('Cache-Control','no-cache');
+         response.data=updatedMoviehall;
+         res.send(response);
+       }
+			//res.redirect('/moviehall');
   });
 });
 
 router.get('/delete/:id', function(req, res) {
   MovieHallApi.deleteMovieHallById(req.params.id, function(err) {
-    res.redirect('/moviehall');
+    if(err)
+       {
+         return res.json({'success':false,'message':'Some Error'})
+         
+       }
+       else
+       {
+         res.setHeader('Cache-Control','no-cache');
+         //response.data=moviehall;
+         res.send(response);
+       }
+   // res.redirect('/moviehall');
   });
 });
 

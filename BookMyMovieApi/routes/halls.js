@@ -12,25 +12,41 @@ let response={
 
 /* GET halls listing. */
 router.get('/', function(req, res, next) {
-    HallApi.getAllHalls(function(err, items) {
-       // res.render('hall/index', {title: 'Halls', halls: items})
+    HallApi.getAllHalls(function(err, halls) {
        if(err)
        {
          return res.json({'success':false,'message':'Some Error'})
+         
        }
        else
        {
          res.setHeader('Cache-Control','no-cache');
          response.data=halls;
-         res.json(response);
+         res.send(response);
        }
         });
 });
+router.get('/edit/:id', function(req, res) {
+  HallApi.getHallById(req.params.id, function(err, hall) {
+    if(err)
+     {
+       return res.json({'success':false,'message':'Some Error'})
+     }
+     else
+     {
+       res.setHeader('Cache-Control','no-cache');
+       response.data=hall;
+       res.json(response);
+     }
+  });
+
+});
+
 router.get('/city', function(req, res, next) {
-  HallApi.getDistinctCity(function(err, items) {
-      //res.render('hall/index', {title: 'Halls', halls: items})
+  HallApi.getDistinctCity(function(err, city) {
       if(err)
       {
+        document.write("error");
         return res.json({'success':false,'message':'Some Error'})
       }
       else
@@ -44,7 +60,7 @@ router.get('/city', function(req, res, next) {
 
 
 
-router.post('/create', function(req, res) {
+router.put('/create', function(req, res) {
     var hall = {};
     hall.city = req.body.city;
     hall.hall_name = req.body.hall_name;
@@ -59,27 +75,13 @@ router.post('/create', function(req, res) {
       else
       {
         res.setHeader('Cache-Control','no-cache');
-        //response.data=hall;
+        response.data=hall;
         res.json(response);
       }
     });
   });
   
-  router.get('/edit/:id', function(req, res) {
-    HallApi.getHallById(req.params.id, function(err, hall) {
-      if(err)
-       {
-         return res.json({'success':false,'message':'Some Error'})
-       }
-       else
-       {
-         res.setHeader('Cache-Control','no-cache');
-         response.data=hall;
-         res.json(response);
-       }
-    });
-  
-  });
+ 
   
   router.post('/edit/:id', function(req, res) {
     var updatedHallDetail = {};
@@ -95,13 +97,13 @@ router.post('/create', function(req, res) {
       else
       {
         res.setHeader('Cache-Control','no-cache');
-        //response.data=halls;
+        response.data=updatedHallDetail;
         res.json(response);
       }
     });
   });
   
-  router.get('/delete/:id', function(req, res) {
+  router.delete('/delete/:id', function(req, res) {
     HallApi.deleteHallById(req.params.id, function(err) {
       if(err)
       {
