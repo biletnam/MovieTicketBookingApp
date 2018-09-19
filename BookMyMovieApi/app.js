@@ -62,6 +62,7 @@
 'use strict';
 
 const express = require('express');  
+var path = require('path');
 const app = express();  
 const bodyParser = require('body-parser');
 
@@ -73,12 +74,18 @@ var config = require('./config/database');
 // var users = require('./routes/users');
 var halls = require('./routes/halls');
 var login = require('./routes/login');
-// var movies = require('./routes/movies');
-// var movieHall = require('./routes/movieHall');
+ var movies = require('./routes/movies');
+var index = require('./routes/index');
+ var movieHall = require('./routes/movieHall');
 
 app.listen(4200);
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/', express.static(path.join(__dirname, 'public')));
+
+ app.get('*', (req, res) => {
+   res.sendFile(path.join(__dirname, 'public/index.html'));
+ });
 
 mongoose.Promise = require('bluebird');
 mongoose.connect(config.database, { promiseLibrary: require('bluebird') })
@@ -87,7 +94,30 @@ mongoose.connect(config.database, { promiseLibrary: require('bluebird') })
 
 
 app.use('/halls', halls);
-app.use('/', login);
+app.use('/login', login);
+//app.use('/', index);
+
+ app.use('/movies', movies);
+ app.use('/moviehall', movieHall);
 app.use(passport.initialize());
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
 
 module.exports = app;  
